@@ -1,0 +1,30 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+pool:
+  vmImage: 'Ubuntu 16.04'
+
+variables:
+  buildConfiguration: 'Release'
+  Major: '0'
+  Minor: '1'
+  Patch: '0-alpha-'
+  Counter: $[counter('versioncounter')]
+  
+steps:
+- script: dotnet pack src/Pioneer.Reveal.ElasticProxy/Pioneer.Reveal.ElasticProxy.csproj -c $(buildConfiguration) -p:PackageVersion=$(Major).$(Minor).$(Patch)$(Counter)
+  displayName: 'dotnet pack'
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(System.DefaultWorkingDirectory)'
+    Contents: |
+      /**/*.nupkg
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    FlattenFolders: true
+  displayName: 'Copy Artifacts'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifacts'
