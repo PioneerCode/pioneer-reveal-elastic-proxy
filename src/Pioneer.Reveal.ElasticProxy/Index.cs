@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Pioneer.Reveal.Elastic
+namespace Pioneer.Reveal.ElasticProxy
 {
     [DataContract]
     public class Index

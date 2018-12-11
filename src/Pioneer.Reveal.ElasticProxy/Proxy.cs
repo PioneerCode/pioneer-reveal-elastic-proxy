@@ -3,7 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Pioneer.Reveal.Elastic
+namespace Pioneer.Reveal.ElasticProxy
 {
     public interface IProxy
     {
