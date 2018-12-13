@@ -13,7 +13,6 @@ namespace Pioneer.Reveal.ElasticProxy.Api.Services
     public interface IUserService
     {
         User Authenticate(string username, string password);
-        IEnumerable<User> GetAll();
     }
 
     public class UserService : IUserService
@@ -39,19 +38,15 @@ namespace Pioneer.Reveal.ElasticProxy.Api.Services
         {
             var user = _users.SingleOrDefault(x => x.Username == username && x.Password == password);
 
-            if (user == null)
-            {
+            if (user == null) { 
                 return null;
             }
 
-            GenerateToken(user);
-
-            user.Password = null;
-
+            GetToken(user);
             return user;
         }
 
-        private void GenerateToken(User user)
+        private void GetToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_config.JwtSecret);
@@ -66,14 +61,7 @@ namespace Pioneer.Reveal.ElasticProxy.Api.Services
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             user.Token = tokenHandler.WriteToken(token);
-        }
-
-        public IEnumerable<User> GetAll()
-        {
-            return _users.Select(x => {
-                x.Password = null;
-                return x;
-            });
+            user.Password = null;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Security.Claims;
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,31 +22,6 @@ namespace Pioneer.Reveal.ElasticProxy.Api.Extensions
             }
 
             services.AddScoped<IUserService, UserService>();
-        }
-
-        public static void AddPioneerRevealAuthentication(this IServiceCollection services, IConfiguration config)
-        {
-            services
-                .AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
-                })
-                .AddJwtBearer(jwtBearerOptions =>
-                {
-                    jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = config["PioneerReveal:SiteUrl"],
-                        ValidAudience = config["PioneerReveal:SiteUrl"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["PioneerReveal:JwtSecret"]))
-                    };
-                });
         }
     }
 }

@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Pioneer.Reveal.ElasticProxy.Api.Controllers
 {
-    [Authorize]
     [ApiController]
+    [Authorize]
     public class PioneerRevealController : ControllerBase
     {
         private readonly IProxy _proxy;
