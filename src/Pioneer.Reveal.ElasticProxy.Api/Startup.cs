@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Pioneer.Logs.Tubs.AspNetCore;
 using Pioneer.Reveal.ElasticProxy.Api.Entites;
 using Pioneer.Reveal.ElasticProxy.Api.Extensions;
 
@@ -52,6 +53,7 @@ namespace Pioneer.Reveal.ElasticProxy.Api
                 });
 
             services.RegisterPioneerReveal(Configuration["PioneerReveal:ElasticUrl"]);
+            services.AddPioneerLogs(Configuration.GetSection("PioneerLogsConfiguration"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,14 +68,15 @@ namespace Pioneer.Reveal.ElasticProxy.Api
                 app.UseHsts();
             }
 
+
             app.UseCors(builder => builder
                 .AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials());
-
-            app.UseHttpsRedirection();
             app.UseAuthentication();
+            app.UsePioneerLogs();
+            app.UseHttpsRedirection();
             app.UseMvc();
         }
     }

@@ -1,13 +1,14 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Pioneer.Reveal.ElasticProxy
+namespace Pioneer.Reveal.ElasticProxy.Api.Repository
 {
-    public interface IProxy
+    public interface IElasticsearchRepository
     {
-        Task<Index[]> GetIndicesAsync();
+        Task<Entites.Index[]> GetIndicesAsync();
         Task<dynamic> GetLogsAsync(string index, dynamic request);
     }
 
@@ -19,16 +20,16 @@ namespace Pioneer.Reveal.ElasticProxy
     ///
     /// ElasticSearch itself is not secured, so we only expose it on an internal network.
     /// </summary>
-    public class Proxy : IProxy
+    public class ElasticsearchRepository : IElasticsearchRepository
     {
         private readonly string _url;
 
-        public Proxy()
+        public ElasticsearchRepository()
         {
             _url = "http://localhost:9200";
         }
 
-        public Proxy(string url)
+        public ElasticsearchRepository(string url)
         {
             _url = url;
         }
@@ -37,14 +38,14 @@ namespace Pioneer.Reveal.ElasticProxy
         /// Get all available indices: /_cat/indices?format=json
         /// </summary>
         /// <returns>Elastic Index result body</returns>
-        public async Task<Index[]> GetIndicesAsync()
+        public async Task<Entites.Index[]> GetIndicesAsync()
         {
             using (var client = new HttpClient())
             {
                 var response = await client.GetAsync($"{_url}/{ProxyRoutes.GetIndices}?format=json");
                 response.EnsureSuccessStatusCode();
                 var responseBody = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<Index[]>(responseBody);
+                return JsonConvert.DeserializeObject<Entites.Index[]>(responseBody);
             }
         }
 

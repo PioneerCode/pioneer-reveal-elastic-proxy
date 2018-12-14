@@ -8,23 +8,23 @@ namespace Pioneer.Reveal.ElasticProxy.Api.Controllers
     [Authorize]
     public class PioneerRevealController : ControllerBase
     {
-        private readonly IProxy _proxy;
+        private readonly Repository.IElasticsearchRepository _elasticsearchRepository;
 
-        public PioneerRevealController(IProxy proxy)
+        public PioneerRevealController(Repository.IElasticsearchRepository elasticsearchRepository)
         {
-            _proxy = proxy;
+            _elasticsearchRepository = elasticsearchRepository;
         }
 
-        [HttpGet(ProxyRoutes.GetIndices)]
-        public async Task<ActionResult<Index[]>> GetIndicesAsync()
+        [HttpGet(Repository.ProxyRoutes.GetIndices)]
+        public async Task<ActionResult<Entites.Index[]>> GetIndicesAsync()
         {
-            return await _proxy.GetIndicesAsync();
+            return await _elasticsearchRepository.GetIndicesAsync();
         }
 
-        [HttpPost(ProxyRoutes.GetLogs)]
+        [HttpPost(Repository.ProxyRoutes.GetLogs)]
         public async Task<ActionResult<dynamic>> GetIndicesAsync(string indices, dynamic request)
         {
-            return await _proxy.GetLogsAsync(indices, request);
+            return await _elasticsearchRepository.GetLogsAsync(indices, request);
         }
     }
 }

@@ -1,9 +1,5 @@
-﻿using System.Security.Claims;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Pioneer.Reveal.ElasticProxy.Api.Repository;
 using Pioneer.Reveal.ElasticProxy.Api.Services;
 
 namespace Pioneer.Reveal.ElasticProxy.Api.Extensions
@@ -14,11 +10,11 @@ namespace Pioneer.Reveal.ElasticProxy.Api.Extensions
         {
             if (!string.IsNullOrEmpty(url))
             {
-                services.AddTransient<IProxy>(s => new Proxy(url));
+                services.AddTransient<IElasticsearchRepository>(s => new ElasticsearchRepository(url));
             }
             else
             {
-                services.AddTransient<IProxy>(s => new Proxy());
+                services.AddTransient<IElasticsearchRepository>(s => new ElasticsearchRepository());
             }
 
             services.AddScoped<IUserService, UserService>();

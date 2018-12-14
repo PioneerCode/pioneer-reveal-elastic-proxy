@@ -1,4 +1,4 @@
-﻿namespace Pioneer.Reveal.ElasticProxy
+﻿namespace Pioneer.Reveal.ElasticProxy.Api.Repository
 {
     public static class ProxyRoutes
     {
