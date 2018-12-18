@@ -28,7 +28,7 @@ namespace Pioneer.Reveal.ElasticProxy.Api
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             // configure strongly typed settings objects
-            var appSettingsSection = Configuration.GetSection("PioneerReveal");
+            var appSettingsSection = Configuration.GetSection("PioneerRevealConfiguration");
             services.Configure<PioneerRevealConfiguraiton>(appSettingsSection);
 
             // Configure JWT authorization
@@ -52,7 +52,7 @@ namespace Pioneer.Reveal.ElasticProxy.Api
                     };
                 });
 
-            services.RegisterPioneerReveal(Configuration["PioneerReveal:ElasticUrl"]);
+            services.RegisterPioneerReveal(Configuration["PioneerRevealConfiguration:ElasticUrl"]);
             services.AddPioneerLogs(Configuration.GetSection("PioneerLogsConfiguration"));
         }
 
