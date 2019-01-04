@@ -24,7 +24,18 @@ namespace Pioneer.Reveal.ElasticProxy.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                    builder =>
+                    {
+                        builder
+                            .WithOrigins("http://localhost:4200")
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowCredentials();
+                    });
+            });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             // configure strongly typed settings objects
@@ -69,11 +80,7 @@ namespace Pioneer.Reveal.ElasticProxy.Api
             }
 
 
-            app.UseCors(builder => builder
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials());
+            app.UseCors("AllowAll");
             app.UseAuthentication();
             app.UsePioneerLogs();
             app.UseHttpsRedirection();
