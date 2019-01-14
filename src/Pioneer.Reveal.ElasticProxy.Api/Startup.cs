@@ -24,27 +24,31 @@ namespace Pioneer.Reveal.ElasticProxy.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var appSettingsSection = Configuration.GetSection("PioneerRevealConfiguration");
+            services.Configure<PioneerRevealConfiguraiton>(appSettingsSection);
+            var config = appSettingsSection.Get<PioneerRevealConfiguraiton>();
+
+            services.RegisterPioneerReveal(config.ElasticUrl);
+            services.AddPioneerLogs(Configuration.GetSection("PioneerLogsConfiguration"));
+
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll",
                     builder =>
                     {
                         builder
-                            .WithOrigins("http://localhost:4200")
+                            .WithOrigins(config.CorsOrigin)
                             .AllowAnyMethod()
                             .AllowAnyHeader()
                             .AllowCredentials();
                     });
             });
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            // configure strongly typed settings objects
-            var appSettingsSection = Configuration.GetSection("PioneerRevealConfiguration");
-            services.Configure<PioneerRevealConfiguraiton>(appSettingsSection);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             // Configure JWT authorization
-            var appSettings = appSettingsSection.Get<PioneerRevealConfiguraiton>();
-            var key = Encoding.ASCII.GetBytes(appSettings.JwtSecret);
+
+            var key = Encoding.ASCII.GetBytes(config.JwtSecret);
             services.AddAuthentication(x =>
                 {
                     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -62,9 +66,6 @@ namespace Pioneer.Reveal.ElasticProxy.Api
                         ValidateAudience = false
                     };
                 });
-
-            services.RegisterPioneerReveal(Configuration["PioneerRevealConfiguration:ElasticUrl"]);
-            services.AddPioneerLogs(Configuration.GetSection("PioneerLogsConfiguration"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

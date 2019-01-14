@@ -6,5 +6,7 @@
         public string Username { get; set; }
         public string Password { get; set; }
         public string SiteUrl { get; set; }
+        public string ElasticUrl { get; set; }
+        public string CorsOrigin { get; set; }
     }
 }
